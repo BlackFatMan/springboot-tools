@@ -21,9 +21,6 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
     <!-- test Login -->
-    <input type="button" id="login" value="登陆" />
-    <input type="button" id="list" value="list">
-    <div id="d1"></div>
 
     <!-- test webocket -->
     <div id="d2"></div>
@@ -34,40 +31,6 @@
     <input type="button" value="关闭连接" id="clear">
 
     <script>
-        var host = "http://127.0.0.1:8580";
-
-        var token;
-        jQuery("#login").click(function () {
-            $.ajax({
-                url: host + "/login",
-                data: {
-                    "username": "admin",
-                    "password": "123456"
-                },
-                type: "post",
-                success: function (data) {
-
-                    token = data.msg;
-                    console.log(data)
-                    $("#d1").html(data);
-                }
-            })
-        })
-        jQuery("#list").click(function () {
-            $.ajax({
-                url: host + "/emp/user/list",
-                data: {
-
-                },
-                type: "get",
-                headers: { "token": token },
-                success: function (data) {
-                    console.log(data)
-                    $("#d1").html(data);
-                }
-            })
-        })
-
         if (typeof (websocket) == undefined) {
             console.log("你的浏览器不支持websocket")
         } else {
