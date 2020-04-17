@@ -95,7 +95,34 @@ public class WebSocketFactory {
     }
 
     /**
-     * 这个方法与上面几个方法不一样。没有用注解，是根据自己需要添加的方法。
+     * 给在线的指定客户端用户发送消息
+     * @author : Black_FatMan
+     * @Description :
+     * @date : 2020/4/15
+     * @param message
+     * @param uids
+     * @return : void
+     * @Modified :
+     */
+    public void sendMessage(String message, List<String> uids) {
+        for (WebSocketFactory item : webSocketSet) {
+            uids.forEach(receiveUid->{
+                String uid =  item.uid;
+                //如果接收人在线的话,给前端发送消息
+                if (uid.equals(receiveUid)) {
+                    try {
+                        item.sendMessage(uid+":"+message);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 给所有客户端发送消息
      *
      * @param message
      * @throws IOException
