@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <!-- test Login -->
+
+    <!-- test webocket -->
+    <div id="d2"></div>
+    <label>当前登陆用户编号</label> <input type="text" id="loginUserid" required readonly><br>
+    <label>接收消息用户</label> <input type="text" id="receiveUserid"><br>
+    <input type="text" id="data">
+    <input type="button" value="推送消息" id="subData">
+    <input type="button" value="关闭连接" id="clear">
+
+    <script>
+        if (typeof (websocket) == undefined) {
+            console.log("你的浏览器不支持websocket")
+        } else {
+            //当前登陆用户
+            var uid = Math.round(Math.random() * 100);
+
+            $(function () {
+                $("#loginUserid").val(uid);
+            })
+            //Websocket
+            socket = new WebSocket("ws://192.168.10.103:8081/websocket/" + uid);
+            // socket = new WebSocket("ws://192.168.10.103:8585/websocket");
+            //链接成功之后的回调
+            socket.onopen = function () {
+                console.info("连接websocket服务器成功")
+            }
+            //客户端给服务器推送消息
+            $("#subData").click(function () {
+                //发送的消息
+                var data = $("#data").val();
+                //接收消息的用户编号
+                var userid = $("#receiveUserid").val();
+                socket.send(userid + ":" + data);
+            })
+            //服务端接收消息后,给前端返回的消息
+            socket.onmessage = function (data) {
+                $("#d2").html($("#d2").html() + data.data + "<br>")
+                console.info(+ data);
+            }
+            //websocket.colse();手动关闭连接
+            //断开连接的方法,无论是手动关闭还是浏览器关闭都会执行这个方法
+            socket.onclose = function (event) {
+                console.info("关闭连接")
+                console.info(event)
+            }
+            $("#clear").click(function () {
+                clear();
+            });
+            function clear() {
+                socket.close();
+            }
+        }
+    </script>
+</body>
+
+</html>
